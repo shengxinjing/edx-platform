@@ -38,12 +38,6 @@
             this.displayTabTooltip = function(event) {
                 return Sequence.prototype.displayTabTooltip.apply(self, [event]);
             };
-            this.loadSeqContents = function() {
-                return Sequence.prototype.loadSeqContents.apply(self);
-            }
-            this.recalcGrade = function() {
-                return Sequence.prototype.recalcGrade.apply(self);
-            }
             this.arrowKeys = {
                 LEFT: 37,
                 UP: 38,
@@ -63,21 +57,11 @@
             this.ajaxUrl = this.el.data('ajax-url');
             this.nextUrl = this.el.data('next-url');
             this.prevUrl = this.el.data('prev-url');
-            this.gateContent = this.el.data('gate-content').toLowerCase();
-            this.prereqUrl = this.el.data('prereq-url');
-            this.prereqSectionName = this.el.data('prereq-section-name');
-            this.unitName  = this.el.data('unit-name');
-            this.scoreReached = this.el.data('score-reached').toLowerCase();
-            this.calculateScore = this.el.data('calculate-score').toLowerCase();
+            this.gateContent = this.el.data('gate-content')
             this.keydownHandler($(element).find('#sequence-list .tab'));
             this.base_page_title = ($('title').data('base-title') || '').trim();
             this.bind();
             this.render(parseInt(this.el.data('position'), 10));
-            console.log("calculateScore=" + this.calculateScore + " typeof=" + (typeof this.calculateScore));
-            if (this.calculateScore == "True" || this.calculateScore == "true") {
-                // TODO - remove setTimeout, just for testing
-                setTimeout(this.recalcGrade, 200);
-            }
         }
 
         Sequence.prototype.$ = function(selector) {
@@ -91,66 +75,6 @@
             this.el.on('bookmark:remove', this.removeBookmarkIconFromActiveNavItem);
             this.$('#sequence-list .nav-item').on('focus mouseenter', this.displayTabTooltip);
             this.$('#sequence-list .nav-item').on('blur mouseleave', this.hideTabTooltip);
-            this.$('.recalc-grade').click(this.recalcGrade);
-        };
-
-        Sequence.prototype.loadSeqContents = function() {
-            var modxFullUrl, currentText, self;
-            modxFullUrl = '' + this.ajaxUrl + '/load_seq_contents';
-            self = this;
-
-            $.postWithPrefix(modxFullUrl, {},
-                function(response) {
-                    $('#loading-content').hide();
-                    console.log('load_seq_contents response = ');
-                    console.log(response);
-                    self.position = -1;
-                    $('#seq-list-wrapper').html(response.seq_list_html);
-                    $('#main-content').html(response.seq_contents_html);
-
-                    self.contents = self.$('.seq_contents');
-                    self.content_container = self.$('#seq_content');
-                    self.sr_container = self.$('.sr-is-focusable');
-                    self.num_contents = self.contents.length;
-                    self.bind();
-                    // TODO - for some reason the content only renders for HTML
-                    // And not for Problems/Videos. How to force rendering of
-                    // the Xblocks?
-                    self.render(1);
-                }
-            );
-        };
-
-        Sequence.prototype.recalcGrade = function() {
-            var modxFullUrl, currentText, self;
-            modxFullUrl = '' + this.ajaxUrl + '/recalc_grade';
-            self = this;
-            $('.ui-loading').show();
-            $.postWithPrefix(modxFullUrl, {
-                    "gate_conent": this.gateContent,
-                    "prereq_url": this.prereqUrl,
-                    "prereq_section_name": this.prereqSectionName,
-                    "unit_name": this.unitName,
-                    "score_reached": this.scoreReached,
-                    "calculate_score": this.calculateScore
-                }, function(response) {
-                    console.log('Got response = ');
-                    console.log(response);
-                    self.gateContent = response.gate_content;
-                    self.scoreReached = response.score_reached;
-                    self.calculateScore = response.calculate_score;
-                    console.log("scoreReached=" + self.scoreReached + " type=" + (typeof self.scoreReached));
-                    $('.ui-loading').hide();
-                    $('#main-content').html(response.html);
-                    if (self.scoreReached == true) {
-                        // if we reached the score, load the contents
-                        // after a short delay
-                        $('.fa-lock').removeClass('fa-lock').addClass('fa-unlock');
-                        $('#loading-content').show();
-                        setTimeout(self.loadSeqContents, 3000);
-                    }
-                }
-            );
         };
 
         Sequence.prototype.previousNav = function(focused, index) {

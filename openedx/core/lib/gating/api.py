@@ -13,6 +13,7 @@ from milestones import api as milestones_api
 from opaque_keys.edx.keys import UsageKey
 from opaque_keys.edx.locator import BlockUsageLocator
 from openedx.core.lib.gating.exceptions import GatingValidationError
+from util import milestones_helpers
 from xmodule.modulestore.django import modulestore
 
 log = logging.getLogger(__name__)
@@ -341,44 +342,30 @@ def _calculate_ratio(earned, possible):
     """
     return float(earned) / float(possible) if possible else 0.0
 
-def get_gating_milestone_meta_info(course_id, milestone):
-    """
-    Returns dict containing meta information about given milestone
-
-    Arguments:
-        course_id: The id of the course
-        milestone (Milestone): The gating milestone
-
-    Returns:
-        dict of {'url': gating_milestone_url, 'display_name': gating_milestone_display_name}
-    """
-    prereq_content_key = milestone['namespace'].replace(GATING_NAMESPACE_QUALIFIER, '')
-    gating_milestone_url = reverse('jump_to', kwargs={'course_id': course_id, 'location': prereq_content_key})
-    block_id = UsageKey.from_string(prereq_content_key).block_id
-    blocks = modulestore().get_items(course_id, qualifiers={'name': [block_id]})
-    if blocks:
-        gating_milestone_display_name = blocks[0].display_name
-    return {'url': gating_milestone_url, 'display_name': gating_milestone_display_name}
-
-
-def is_prereq_met(course_id, content_id, user_id, recalc_on_unmet=False):
+def is_prereq_met(content_id, user_id, recalc_on_unmet=False):
     """
     Returns true if the prequiste has been met for a given milestone
 
     Arguments:
-        course_id (CourseLocator): CourseLocator object for the course
         content_id (BlockUsageLocator): BlockUsageLocator for the content
         user_id: The id of the user
         recalc_on_unmet: Recalculate the grade if prereq has not yet been met
     """
-    #prereq_met = milestones_api.user_has_milestone({'id': user_id}, milestone)
     # if unfullfilled milestones exist it means prereq has not been met
-    unfulfilled_milestones = milestones_api.get_course_content_milestones(course_id, content_id, 'requires', {'id': user_id})
+    course_id = content_id.course_key
+    unfulfilled_milestones = milestones_helpers.get_course_content_milestones(
+        course_id,
+        content_id,
+        'requires',
+        user_id
+    )
     prereq_met = not unfulfilled_milestones
 
     if prereq_met or not recalc_on_unmet:
-        return prereq_met
+        return prereq_met, {}
 
+    # TODO - need to check for length here?
+    milestone = unfulfilled_milestones[0]
     student = User.objects.get(id=user_id)
     store = modulestore()
 
@@ -386,20 +373,25 @@ def is_prereq_met(course_id, content_id, user_id, recalc_on_unmet=False):
         course_structure = get_course_blocks(student, store.make_course_usage_key(course_id))
         course = store.get_course(course_id, depth=0)
         subsection_grade_factory = SubsectionGradeFactory(student, course, course_structure)
-        subsection_usage_key = BlockUsageLocator(course_id, 'sequential', _get_block_id(unfulfilled_milestones[0]))
+        subsection_usage_key = UsageKey.from_string(milestone['namespace'].replace(GATING_NAMESPACE_QUALIFIER, ''))
+        
         if subsection_usage_key in course_structure:
-            subsection_grade = subsection_grade_factory.update(
-                course_structure[subsection_usage_key]
-            )
-            min_percentage = _get_minimum_required_percentage(unfulfilled_milestones[0])
+            subsection_grade = subsection_grade_factory.update(course_structure[subsection_usage_key])
+            min_percentage = _get_minimum_required_percentage(milestone)
             subsection_percentage = _get_subsection_percentage(subsection_grade)
             if subsection_percentage >= min_percentage:
                 prereq_met = True
                 # TODO - should save to database here or let happen through async listener?
-                #milestones_helpers.add_user_milestone({'id': user.id}, prereq_milestone)
+                milestones_helpers.add_user_milestone({'id': user_id}, milestone)
             else:
                 prereq_met = False
-                # TODO - should save to database here or let happen through async listener
-                #milestones_helpers.remove_user_milestone({'id': user.id}, prereq_milestone)
+                # TODO - should save to database here or let happen through async listener?
+                milestones_helpers.remove_user_milestone({'id': user_id}, milestone)
 
-    return prereq_met
+            # TODO - change this method to return single object with all the data
+            prereq_meta_info = {
+                'url': reverse('jump_to', kwargs={'course_id': course_id, 'location': subsection_usage_key}), 
+                'display_name': store.get_item(subsection_usage_key).display_name
+            }
+
+    return prereq_met, prereq_meta_info

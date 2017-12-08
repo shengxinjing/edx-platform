@@ -22,8 +22,6 @@ def evaluate_subsection_gated_milestones(**kwargs):
         None
     """
     subsection_grade = kwargs['subsection_grade']
-    # TODO - for testing, remove
-    time.sleep(10)
     gating_api.evaluate_prerequisite(kwargs['course'], subsection_grade, kwargs.get('user'))
 
 

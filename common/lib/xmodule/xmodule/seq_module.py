@@ -205,38 +205,6 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             else:
                 self.position = 1
             return json.dumps({'success': True})
-        elif dispatch == 'recalc_grade':
-            # force a grade recalculation
-            unlock = self._is_prereq_met(True)
-
-            params = {
-                'gate_content': not unlock,
-                'prereq_url': data['prereq_url'],
-                'prereq_section_name': data['prereq_section_name'],
-                'unit_name': data['unit_name'],
-                'score_reached': unlock,
-                'calculate_score': False,
-            }
-            html = self.system.render_template("_gated_content.html", params)
-            return json.dumps({'score_reached': unlock, 'gate_content': not unlock, 'calculate_score': False, 'html': html})
-        elif dispatch == 'load_seq_contents':
-            # load the sequence items
-            display_items = display_items = self.get_display_items();
-            # TODO - figure out how to get the real context here or at least add more of the values
-            context = {
-                'user_authenticated': True,
-                'requested_child': 'first'
-            }
-            items = self._render_student_view_for_items(context, display_items, Fragment())
-            params = {
-                'items': items,
-                'gate_content': False,
-                'disable_navigation': not self.is_user_authenticated(context)
-            }
-            seq_list_html = self.system.render_template("_sequence_list.html", params)
-            seq_contents_html = self.system.render_template("_sequence_contents.html", params)
-
-            return json.dumps({'seq_list_html': seq_list_html, 'seq_contents_html': seq_contents_html})
 
         raise NotFoundError('Unexpected dispatch type')
 
@@ -323,19 +291,18 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
         """
         display_items = self.get_display_items()
         self._update_position(context, len(display_items))
+        prereq_met = True
 
-        gate_content = False
-        gating_milestone = self._find_gating_milestone()
-        if gating_milestone:
+        if self._find_gating_milestone():
             if self.runtime.user_is_staff:
                 banner_text = _('This subsection is unlocked for learners when they meet the prerequisite requirements.')
-            elif not self._is_prereq_met(False):
-                gate_content = True
-                milestone_meta_info = self._get_milestone_meta_info(gating_milestone)
+            else:
+                # check if prerequiste has been met
+                prereq_met, prereq_meta_info = self._is_prereq_met(True)
 
         fragment = Fragment()
         params = {
-            'items': self._render_student_view_for_items(context, display_items, fragment) if not gate_content else {},
+            'items': self._render_student_view_for_items(context, display_items, fragment) if prereq_met else {},
             'element_id': self.location.html_id(),
             'item_id': self.location.to_deprecated_string(),
             'position': self.position,
@@ -345,12 +312,10 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             'prev_url': context.get('prev_url'),
             'banner_text': banner_text,
             'disable_navigation': not self.is_user_authenticated(context),
-            'gate_content': gate_content,
-            'prereq_url': milestone_meta_info['url'] if gate_content else None,
-            'prereq_section_name': milestone_meta_info['display_name'] if gate_content else None,
-            'unit_name': "My Unit",
-            'score_reached': not gate_content,
-            'calculate_score': gate_content
+            'gate_content': not prereq_met,
+            'prereq_url': prereq_meta_info['url'] if not prereq_met else None,
+            'prereq_section_name': prereq_meta_info['display_name'] if not prereq_met else None,
+            'gated_section_name': self.display_name
         }
 
         fragment.add_content(self.system.render_template("seq_module.html", params))
@@ -378,20 +343,9 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
         """
         gating_service = self.runtime.service(self, 'gating')
         if gating_service:
-            # if it's complete then a user milestone record will exist
-            return gating_service.is_prereq_met(self.course_id, self.location, self.runtime.user_id, force_on_unmet)
+            return gating_service.is_prereq_met(self.location, self.runtime.user_id, force_on_unmet)
 
-        return False
-
-    def _get_milestone_meta_info(self, milestone):
-        """
-        Return information to display about the gating milstone
-        """
-        gating_service = self.runtime.service(self, 'gating')
-        if gating_service:
-            return gating_service.get_gating_milestone_meta_info(self.course_id, milestone)
-        
-        return {}
+        return False, {}
 
     def _update_position(self, context, number_of_display_items):
         """
