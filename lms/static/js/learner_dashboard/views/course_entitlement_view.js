@@ -86,8 +86,8 @@
                      }.bind(this));
 
                      // Initialize focus to cancel button on popover load
-                     $(document).on('shown.bs.popover', function () {
-                        this.$('.final-confirmation-btn:first').focus();
+                     $(document).on('shown.bs.popover', function() {
+                         this.$('.final-confirmation-btn:first').focus();
                      }.bind(this));
                  },
 
@@ -317,7 +317,7 @@
                      /* Removes the Bootstrap v4 dialog modal from the update session enrollment button. */
                      var $el = el instanceof jQuery ? el : this.$('.enroll-btn-initial');
                      if (this.$('popover').length) {
-                        $el.popover('dispose');
+                         $el.popover('dispose');
                      }
                  },
 
