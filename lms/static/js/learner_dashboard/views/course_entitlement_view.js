@@ -385,8 +385,9 @@
                          endDate = this.formatDate(formattedSession.end, dateFormat);
                          formattedSession.enrollment_end = this.formatDate(formattedSession.enrollment_end, dateFormat);
                          formattedSession.session_dates = this.courseCardModel.formatDateString({
-                             start_date: session.advertised_start || startDate,
-                             end_date: session.advertised_start ? '' : endDate,
+                             start_date: startDate,
+                             advertised_start: session.advertised_start,
+                             end_date: endDate,
                              pacing_type: formattedSession.pacing_type
                          });
                          return formattedSession;
