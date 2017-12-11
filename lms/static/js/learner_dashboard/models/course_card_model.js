@@ -194,8 +194,8 @@
                         }
                         this.set({
                             certificate_url: courseRun.certificate_url,
-                            course_run_key: isEnrolled ? courseRun.key : '',
-                            course_url: isEnrolled ? courseRun.course_url : '',
+                            course_run_key: courseRun.key || '',
+                            course_url: courseRun.course_url || '',
                             title: this.context.title,
                             end_date: this.formatDate(courseRun.end, userPreferences),
                             enrollable_course_runs: this.getEnrollableCourseRuns(),
