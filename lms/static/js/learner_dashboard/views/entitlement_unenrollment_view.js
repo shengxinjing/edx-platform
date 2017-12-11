@@ -102,16 +102,8 @@
                         HtmlUtils.interpolateHtml(
                             gettext('Are you sure you want to unenroll from {courseName} ({courseNumber})?'),
                             {
-                                courseName: HtmlUtils.joinHtml(
-                                    HtmlUtils.HTML('<span id="entitlement-unenrollment-course-name">'),
-                                    courseName,
-                                    HtmlUtils.HTML('</span>')
-                                ),
-                                courseNumber: HtmlUtils.joinHtml(
-                                    HtmlUtils.HTML('<span id="entitlement-unenrollment-course-number">'),
-                                    courseNumber,
-                                    HtmlUtils.HTML('</span>')
-                                )
+                                courseName: courseName,
+                                courseNumber: courseNumber
                             }
                         )
                     );
@@ -130,10 +122,9 @@
                     HtmlUtils.setHtml(this.$refundInfo, message);
                 },
 
-                setSubmitData: function(apiEndpoint, isRefundable) {
+                setSubmitData: function(apiEndpoint) {
                     this.$submitButton.removeData();
                     this.$submitButton.data('entitlementApiEndpoint', apiEndpoint);
-                    this.$submitButton.data('entitlementIsRefundable', isRefundable);
                 },
 
                 onComplete: function(xhr) {
