@@ -54,13 +54,13 @@
                     var $trigger = $(event.target),
                         courseName = $trigger.data('courseName'),
                         courseNumber = $trigger.data('courseNumber'),
-                        isRefundable = $trigger.data('entitlementIsRefundable'),
+                        isRefundable = $trigger.data('entitlementIsRefundable') && $trigger.data('entitlementIsRefundable').toLowerCase() === 'true',
                         apiEndpoint = $trigger.data('entitlementApiEndpoint');
 
                     this.resetModal();
                     this.setTrackInfo(courseName, courseNumber);
                     this.setRefundInfo(isRefundable);
-                    this.setSubmitData(apiEndpoint, isRefundable);
+                    this.setSubmitData(apiEndpoint);
 
                     if (window.edx && window.edx.dashboard && window.edx.dashboard.dropdown) {
                         window.edx.dashboard.dropdown.toggleCourseActionsDropdownMenu(event);
@@ -69,10 +69,9 @@
                 },
 
                 handleSubmit: function() {
-                    var apiEndpoint = this.$submitButton.data('entitlementApiEndpoint'),
-                        isRefundable = this.$submitButton.data('entitlementIsRefundable');
+                    var apiEndpoint = this.$submitButton.data('entitlementApiEndpoint');
 
-                    if (apiEndpoint === undefined || isRefundable === undefined) {
+                    if (apiEndpoint === undefined) {
                         this.setError(gettext('Error: cannot process unenrollment request.'));
                         return;
                     }
