@@ -18,7 +18,8 @@
 
                 initialize: function(options) {
                     var view = this;
-                    this.dashboardUrl = options.dashboardUrl;
+                    this.dashboardPath = options.dashboardPath;
+                    this.signInPath = options.signInPath;
 
                     this.$submitButton = $(this.submitButtonSelector);
                     this.$trackInfo = $(this.trackInfoSelector);
@@ -129,7 +130,9 @@
 
                 onComplete: function(xhr) {
                     if (xhr.status === 204) {
-                        window.location.href = this.dashboardUrl;
+                        window.location.href = this.dashboardPath;
+                    } else if (xhr.status === 401 && xhr.responseJSON.detail === 'Authentication credentials were not provided.') {
+                        window.location.href = this.signInPath + '?next=' + encodeURIComponent(this.dashboardPath);
                     } else {
                         this.setError(gettext('Error: something went wrong while processing your request.'));
                     }
