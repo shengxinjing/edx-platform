@@ -114,7 +114,8 @@
     $(document).ready(function($) {
         $('a[rel*=leanModal]').each(function() {
             var $link = $(this),
-                closeButton = $link.data('modalCloseButton') || '.close-modal';
+                closeButton = $link.data('modalCloseButton') || '.close-modal',
+                embed;
 
             $link.leanModal({top: 120, overlay: 1, closeButton: closeButton, position: 'absolute'});
             embed = $($link.attr('href')).find('iframe');

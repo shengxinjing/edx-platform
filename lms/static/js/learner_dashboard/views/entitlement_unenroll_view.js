@@ -1,11 +1,11 @@
 (function(define) {
     'use strict';
     define(['backbone',
-            'jquery',
-            'underscore',
-            'gettext',
-            'edx-ui-toolkit/js/utils/html-utils'
-        ],
+        'jquery',
+        'underscore',
+        'gettext',
+        'edx-ui-toolkit/js/utils/html-utils'
+    ],
         function(Backbone, $, _, gettext, HtmlUtils) {
             return Backbone.View.extend({
                 el: '#unenroll-entitlement-modal',
@@ -25,7 +25,7 @@
                 mainPageSelector: '#dashboard-main',
 
                 initialize: function(options) {
-                    var _this = this;
+                    var view = this;
                     this.dashboardUrl = options.dashboardUrl;
 
                     this.$submitButton = $(this.submitButtonSelector);
@@ -35,17 +35,17 @@
 
                     this.$submitButton.on('click', this.handleSubmit.bind(this));
 
-                    $(this.triggerSelector).each(function(index) {
+                    $(this.triggerSelector).each(function() {
                         var $trigger = $(this);
 
-                        $trigger.on('click', _this.handleTrigger.bind(_this));
+                        $trigger.on('click', view.handleTrigger.bind(view));
 
                         if (window.accessible_modal) {
                             window.accessible_modal(
                                 '#' + $trigger.attr('id'),
-                                _this.closeButtonSelector,
-                                '#' + _this.$el.attr('id'),
-                                _this.mainPageSelector
+                                view.closeButtonSelector,
+                                '#' + view.$el.attr('id'),
+                                view.mainPageSelector
                             );
                         }
                     });
@@ -69,7 +69,7 @@
                     }
                 },
 
-                handleSubmit: function(event) {
+                handleSubmit: function() {
                     var apiEndpoint = this.$submitButton.data('entitlementApiEndpoint'),
                         isRefundable = this.$submitButton.data('entitlementIsRefundable');
 
@@ -100,7 +100,7 @@
                     HtmlUtils.setHtml(
                         this.$errorInfo,
                         message
-                    )
+                    );
                     this.$errorInfo.css('display', 'block');
                 },
 
@@ -145,15 +145,14 @@
                     this.$submitButton.data('entitlementIsRefundable', isRefundable);
                 },
 
-                onComplete: function(xhr, textStatus) {
+                onComplete: function(xhr) {
                     if (xhr.status === 204) {
-                        window.location.href = this.dashboardUrl
+                        window.location.href = this.dashboardUrl;
                     } else {
-                        this.setError(gettext('Error: something went wrong while processing your request.'))
+                        this.setError(gettext('Error: something went wrong while processing your request.'));
                     }
                 }
             });
         }
     );
-
 }).call(this, define || RequireJS.define);
