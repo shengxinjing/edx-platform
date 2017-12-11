@@ -2,11 +2,11 @@
     'use strict';
 
     define([
-        'js/learner_dashboard/views/entitlement_unenroll_view'
+        'js/learner_dashboard/views/entitlement_unenrollment_view'
     ],
-    function(EntitlementUnenrollView) {
+    function(EntitlementUnenrollmentView) {
         return function(options) {
-            return new EntitlementUnenrollView(options);
+            return new EntitlementUnenrollmentView(options);
         };
     });
 }).call(this, define || RequireJS.define);

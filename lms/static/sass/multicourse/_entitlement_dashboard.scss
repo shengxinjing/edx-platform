@@ -1,4 +1,4 @@
-.wrapper-entitlement-action-more {
+.entitlement-actions-wrapper {
     @extend .wrapper-action-more;
 
     .entitlement-action {
@@ -8,57 +8,53 @@
     .entitlement-action-more {
         @extend .action-more;
     }
-}
 
-.entitlement-actions-dropdown {
-    @extend .actions-dropdown;
+    .entitlement-actions-dropdown {
+        @extend .actions-dropdown;
 
-    .entitlement-actions-dropdown-list {
-        @extend .actions-dropdown-list;
+        .entitlement-actions-dropdown-list {
+            @extend .actions-dropdown-list;
 
-        .entitlement-actions-item {
-            @extend .actions-item;
-
-            .entitlement-action {
-                @extend .action;
+            .entitlement-actions-item {
+                @extend .actions-item;
             }
         }
     }
 }
 
-.entitlement-modal {
+.entitlement-unenrollment-modal {
     @extend .modal;
+    margin-top: -60px;
 
-    .entitlement-modal-inner-wrapper {
+    .entitlement-unenrollment-modal-inner-wrapper {
         @extend .inner-wrapper;
 
-        .close-entitlement-modal {
+        .entitlement-unenrollment-modal-close-btn {
             @extend .close-modal;
         }
 
-        .entitlement-unenroll-header {
+        .entitlement-unenrollment-modal-header {
             @extend .unenroll-header;
         }
 
-        .entitlement-modal-form-error {
+        .entitlement-unenrollment-modal-form-error {
             @extend .modal-form-error;
         }
-    }
-}
 
-.unenroll-entitlement-modal {
-    .wrapper-unenroll-entitlement-submit {
-        margin-bottom: 12px;
-        position: relative;
-        z-index: 2;
-        padding: $baseline ($baseline*2);
+        .entitlement-unenrollment-modal-submit-wrapper {
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+            padding: $baseline ($baseline*2);
 
-        .unenroll-entitlement-submit {
-            display: block;
-            height: auto;
-            margin: 0 auto;
-            width: 100%;
-            white-space: normal;
+            .entitlement-unenrollment-modal-submit {
+                display: block;
+                height: auto;
+                margin: 0 auto;
+                width: 100%;
+                white-space: normal;
+            }
         }
     }
 }
+

@@ -11,8 +11,8 @@ var edx = edx || {};
         // define variables for code legibility
         var $currentTarget = $(event.currentTarget),
             dashboardIndex = $currentTarget.data().dashboardIndex,
-            $dropdown = $($currentTarget.data('dropdownId') || '#actions-dropdown-' + dashboardIndex),
-            $dropdownButton = $($currentTarget.data('dropdownButtonId') || '#actions-dropdown-link-' + dashboardIndex),
+            $dropdown = $($currentTarget.data('dropdownSelector') || '#actions-dropdown-' + dashboardIndex),
+            $dropdownButton = $($currentTarget.data('dropdownButtonSelector') || '#actions-dropdown-link-' + dashboardIndex),
             ariaExpandedState = ($dropdownButton.attr('aria-expanded') === 'true'),
             menuItems = $dropdown.find('a');
 
@@ -86,6 +86,6 @@ var edx = edx || {};
 
     $(document).ready(function() {
         edx.dashboard.dropdown.bindToggleButtons('.action-more');
-        edx.dashboard.dropdown.bindToggleButtons('.entitlement-action-more');
+        edx.dashboard.dropdown.bindToggleButtons('.js-entitlement-action-more');
     });
 }(jQuery));

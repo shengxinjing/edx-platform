@@ -4,9 +4,9 @@
 from django.utils.translation import ugettext as _
 %>
 
-<div id="unenroll-entitlement-modal" class="entitlement-modal unenroll-entitlement-modal" aria-hidden="true">
-  <div class="entitlement-modal-inner-wrapper" role="dialog" aria-labelledby="unenroll-entitlement-modal-title">
-    <button class="close-entitlement-modal">
+<div id="entitlement-unenrollment-modal" class="entitlement-unenrollment-modal js-entitlement-unenrollment-modal" aria-hidden="true">
+  <div class="entitlement-unenrollment-modal-inner-wrapper" role="dialog" aria-labelledby="entitlement-unenrollment-modal-title">
+    <button class="entitlement-unenrollment-modal-close-btn js-entitlement-unenrollment-modal-close-btn">
       <span class="icon fa fa-remove" aria-hidden="true"></span>
       <span class="sr">
         ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
@@ -14,10 +14,10 @@ from django.utils.translation import ugettext as _
       </span>
     </button>
 
-    <header class="entitlement-unenroll-header">
-      <h2 id="unenroll-entitlement-modal-title">
-        <span id='entitlement-track-info'></span>
-        <span id='entitlement-refund-info'></span>
+    <header class="entitlement-unenrollment-modal-header">
+      <h2 id="entitlement-unenrollment-modal-title">
+        <span class='js-entitlement-unenrollment-modal-track-info'></span>
+        <span class='js-entitlement-unenrollment-modal-refund-info'></span>
         <span class="sr">,
           ## Translators: this text gives status on if the modal interface (a menu or piece of UI that takes the full focus of the screen) is open or not
           ${_("window open")}
@@ -25,9 +25,9 @@ from django.utils.translation import ugettext as _
       </h2>
       <hr/>
     </header>
-    <div id="unenroll-entitlement-error" class="entitlement-modal-form-error"></div>
-    <div class="wrapper-unenroll-entitlement-submit">
-      <button id="unenroll-entitlement-submit" class="unenroll-entitlement-submit">${_("Unenroll")}</button>
+    <div class="entitlement-unenrollment-modal-form-error js-entitlement-unenrollment-modal-error-info"></div>
+    <div class="entitlement-unenrollment-modal-submit-wrapper">
+      <button class="entitlement-unenrollment-modal-submit js-entitlement-unenrollment-modal-submit">${_("Unenroll")}</button>
     </div>
   </div>
 </div>

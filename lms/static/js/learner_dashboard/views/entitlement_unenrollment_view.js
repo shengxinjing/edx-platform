@@ -7,20 +7,13 @@
     ],
         function(Backbone, $, gettext, HtmlUtils) {
             return Backbone.View.extend({
-                el: '#unenroll-entitlement-modal',
-
-                triggerSelector: '.js-action-unenroll-entitlement',
-
-                submitButtonSelector: '#unenroll-entitlement-submit',
-
-                trackInfoSelector: '#entitlement-track-info',
-
-                refundInfoSelector: '#entitlement-refund-info',
-
-                errorInfoSelector: '#unenroll-entitlement-error',
-
-                closeButtonSelector: '#unenroll-entitlement-modal .close-entitlement-modal',
-
+                el: '.js-entitlement-unenrollment-modal',
+                closeButtonSelector: '.js-entitlement-unenrollment-modal .js-entitlement-unenrollment-modal-close-btn',
+                trackInfoSelector: '.js-entitlement-unenrollment-modal .js-entitlement-unenrollment-modal-track-info',
+                refundInfoSelector: '.js-entitlement-unenrollment-modal .js-entitlement-unenrollment-modal-refund-info',
+                errorInfoSelector: '.js-entitlement-unenrollment-modal .js-entitlement-unenrollment-modal-error-info',
+                submitButtonSelector: '.js-entitlement-unenrollment-modal .js-entitlement-unenrollment-modal-submit',
+                triggerSelector: '.js-entitlement-action-unenroll',
                 mainPageSelector: '#dashboard-main',
 
                 initialize: function(options) {
