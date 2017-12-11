@@ -2,11 +2,10 @@
     'use strict';
     define(['backbone',
         'jquery',
-        'underscore',
         'gettext',
         'edx-ui-toolkit/js/utils/html-utils'
     ],
-        function(Backbone, $, _, gettext, HtmlUtils) {
+        function(Backbone, $, gettext, HtmlUtils) {
             return Backbone.View.extend({
                 el: '#unenroll-entitlement-modal',
 
