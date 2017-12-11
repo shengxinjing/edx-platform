@@ -876,6 +876,67 @@ class CertificatesViewsTests(CommonCertificatesTestCase):
         self.assertIn('Signatory_Title 0', response.content)
 
     @override_settings(FEATURES=FEATURES_WITH_CERTS_ENABLED)
+    def test_render_html_view_with_script_tag_removed_from_course_title(self):
+        """
+        test certificate web view should not show script tag for course title.
+        It should be removed before certificate rendering.
+        """
+
+        test_certificates = [
+            {
+                'id': 0,
+                'name': 'Certificate Name 0',
+                'course_title': 'course_title <script>',
+                'signatories': [],
+                'version': 1,
+                'is_active': True
+            }
+        ]
+        self.course.certificates = {'certificates': test_certificates}
+        self.course.cert_html_view_enabled = True
+        self.course.save()
+        self.store.update_item(self.course, self.user.id)
+
+        test_url = get_certificate_url(
+            user_id=self.user.id,
+            course_id=unicode(self.course.id)
+        )
+        CourseStaffRole(self.course.id).add_users(self.user)
+        response = self.client.get(test_url + '?preview=verified')
+        self.assertNotIn('course_title <script>', response.content)
+        self.assertIn('course_title', response.content)
+
+    @override_settings(FEATURES=FEATURES_WITH_CERTS_ENABLED)
+    def test_render_html_view_with_selective_tag_in_course_title(self):
+        """
+        test certificate web view would allow some selective tags.
+        to be placed in course title for certificate.
+
+        """
+        test_certificates = [
+            {
+                'id': 0,
+                'name': 'Certificate Name 0',
+                'course_title': 'course_title <br>',
+                'signatories': [],
+                'version': 1,
+                'is_active': True
+            }
+        ]
+        self.course.certificates = {'certificates': test_certificates}
+        self.course.cert_html_view_enabled = True
+        self.course.save()
+        self.store.update_item(self.course, self.user.id)
+
+        test_url = get_certificate_url(
+            user_id=self.user.id,
+            course_id=unicode(self.course.id)
+        )
+        CourseStaffRole(self.course.id).add_users(self.user)
+        response = self.client.get(test_url + '?preview=verified')
+        self.assertIn('course_title <br>', response.content)
+
+    @override_settings(FEATURES=FEATURES_WITH_CERTS_ENABLED)
     def test_render_html_view_with_preview_mode_when_user_already_has_cert(self):
         """
         test certificate web view should render properly in
