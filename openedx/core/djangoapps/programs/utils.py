@@ -674,7 +674,7 @@ class ProgramMarketingDataExtender(ProgramDataExtender):
 
         sorted_instructor_names = [
             ' '.join(filter(None, (instructor['given_name'], instructor['family_name'])))
-            for instructor in self.data['instructors']
+            for instructor in self.data['instructor_ordering']
         ]
         instructors_to_be_sorted = [
             instructor for instructor in program_instructors
