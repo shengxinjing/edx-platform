@@ -40,7 +40,7 @@ from django.core.urlresolvers import reverse
           data-course-name="${course_overview.display_name_with_default}"
           data-course-number="${course_overview.number}"
           data-entitlement-is-refundable="${entitlement.is_entitlement_refundable()}"
-          data-entitlement-api-endpoint="${reverse('entitlements_api:v1:enrollments', args=[unicode(entitlement.uuid)])}">
+          data-entitlement-api-endpoint="${reverse('entitlements_api:v1:enrollments', args=[unicode(entitlement.uuid)]) + '?is_revoke=true'}">
           ${_('Unenroll')}
         </a>
       </li>
