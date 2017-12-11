@@ -88,7 +88,8 @@
                              enterCourseBtn: containerSelector + ' .view-course-button',
                              availableSessions: JSON.stringify(this.model.get('course_runs')),
                              entitlementUUID: this.entitlement.uuid,
-                             currentSessionId: this.model.get('course_run_key'),
+                             currentSessionId: this.model.isEnrolledInSession() ?
+                                 this.model.get('course_run_key') : null,
                              enrollUrl: this.model.get('enroll_url'),
                              courseHomeUrl: this.model.get('course_url')
                          });
