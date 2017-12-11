@@ -8,7 +8,6 @@ from pytz import UTC
 from openedx.core.djangoapps.certificates.config import waffle
 from student.models import CourseEnrollment
 
-
 SWITCHES = waffle.waffle()
 
 

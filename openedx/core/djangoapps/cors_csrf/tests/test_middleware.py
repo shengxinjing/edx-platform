@@ -2,17 +2,16 @@
 Tests for the CORS CSRF middleware
 """
 
-from mock import patch, Mock
 import ddt
-
+from django.core.exceptions import ImproperlyConfigured, MiddlewareNotUsed
+from django.http import HttpResponse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.core.exceptions import MiddlewareNotUsed, ImproperlyConfigured
-from django.http import HttpResponse
+from mock import Mock, patch
+
 from birdcage.v1_11.csrf import CsrfViewMiddleware
 
 from ..middleware import CorsCSRFMiddleware, CsrfCrossDomainCookieMiddleware
-
 
 SENTINEL = object()
 
