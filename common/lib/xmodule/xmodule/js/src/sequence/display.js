@@ -7,7 +7,7 @@
     this.Sequence = (function() {
         function Sequence(element) {
             var self = this;
-            console.log("in Sequence for element" + element);
+
             this.removeBookmarkIconFromActiveNavItem = function(event) {
                 return Sequence.prototype.removeBookmarkIconFromActiveNavItem.apply(self, [event]);
             };
@@ -57,7 +57,6 @@
             this.ajaxUrl = this.el.data('ajax-url');
             this.nextUrl = this.el.data('next-url');
             this.prevUrl = this.el.data('prev-url');
-            this.gateContent = this.el.data('gate-content')
             this.keydownHandler($(element).find('#sequence-list .tab'));
             this.base_page_title = ($('title').data('base-title') || '').trim();
             this.bind();
@@ -170,7 +169,7 @@
             *   'new_content_state' is the updated content of the problem.
             *   'new_state' is the updated state of the problem.
             */
-            console.log("in addToUpdatedProblems for problemId=" + problemId);
+
             // initialize for the current sequence if there isn't any updated problem for this position.
             if (!this.anyUpdatedProblems(this.position)) {
                 this.updatedProblems[this.position] = {};
@@ -226,11 +225,9 @@
         };
 
         Sequence.prototype.render = function(newPosition) {
-
             var bookmarked, currentTab, modxFullUrl, sequenceLinks,
                 self = this;
             if (this.position !== newPosition) {
-                //alert("in render for position" + newPosition);
                 if (this.position) {
                     this.mark_visited(this.position);
                     modxFullUrl = '' + this.ajaxUrl + '/goto_position';
@@ -255,7 +252,6 @@
 
                 if (this.anyUpdatedProblems(newPosition)) {
                     $.each(this.updatedProblems[newPosition], function(problemId, latestData) {
-                        console.log("updating problem index=" + newPosition + " problemId=" + problemId);
                         var latestContent, latestResponse;
                         latestContent = latestData[0];
                         latestResponse = latestData[1];
@@ -267,9 +263,7 @@
                             .data('attempts-used', latestResponse.attempts_used);
                     });
                 }
-                //alert("calling XBlock.initialize for content_container=" + this.content_container + " requestToken=" + this.requestToken);
                 XBlock.initializeBlocks(this.content_container, this.requestToken);
-                //alert("XBlocks init is done");
 
                 // For embedded circuit simulator exercises in 6.002x
                 window.update_schematics();

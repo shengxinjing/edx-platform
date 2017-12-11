@@ -6,7 +6,6 @@ from django.dispatch import receiver
 from gating import api as gating_api
 from lms.djangoapps.grades.signals.signals import SUBSECTION_SCORE_CHANGED
 from openedx.core.djangoapps.signals.signals import COURSE_GRADE_CHANGED
-import time
 
 
 @receiver(SUBSECTION_SCORE_CHANGED)

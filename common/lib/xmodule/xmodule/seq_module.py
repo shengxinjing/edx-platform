@@ -317,8 +317,8 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             'prereq_section_name': prereq_meta_info['display_name'] if not prereq_met else None,
             'gated_section_name': self.display_name
         }
-
         fragment.add_content(self.system.render_template("seq_module.html", params))
+        
         self._capture_full_seq_item_metrics(display_items)
         self._capture_current_unit_metrics(display_items)
 
