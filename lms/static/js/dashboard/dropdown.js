@@ -8,7 +8,6 @@ var edx = edx || {};
 
     // Generate the properties object to be passed along with business intelligence events.
     edx.dashboard.dropdown.toggleCourseActionsDropdownMenu = function(event) {
-        // define variables for code legibility
         var $currentTarget = $(event.currentTarget),
             dashboardIndex = $currentTarget.data().dashboardIndex,
             $dropdown = $($currentTarget.data('dropdownSelector') || '#actions-dropdown-' + dashboardIndex),
