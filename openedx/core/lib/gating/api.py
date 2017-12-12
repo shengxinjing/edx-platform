@@ -323,9 +323,14 @@ def is_prereq_met(content_id, user_id, recalc_on_unmet=False):
         content_id (BlockUsageLocator): BlockUsageLocator for the content
         user_id: The id of the user
         recalc_on_unmet: Recalculate the grade if prereq has not yet been met
+
+    Returns:
+        tuple: True|False,
+        prereq_meta_info = { 'url': prereq_url, 'display_name': prereq_name}
     """
-    # if unfullfilled milestones exist it means prereq has not been met
     course_id = content_id.course_key
+
+    # if unfullfilled milestones exist it means prereq has not been met
     unfulfilled_milestones = milestones_helpers.get_course_content_milestones(
         course_id,
         content_id,
@@ -337,7 +342,6 @@ def is_prereq_met(content_id, user_id, recalc_on_unmet=False):
     if prereq_met or not recalc_on_unmet:
         return prereq_met, {}
 
-    # TODO - need to check for length here?
     milestone = unfulfilled_milestones[0]
     student = User.objects.get(id=user_id)
     store = modulestore()

@@ -173,7 +173,6 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
         'scss': [resource_string(__name__, 'css/sequence/display.scss')],
     }
     js_module_name = "Sequence"
-    gating_milestone = None
 
     def __init__(self, *args, **kwargs):
         super(SequenceModule, self).__init__(*args, **kwargs)
@@ -318,7 +317,7 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             'gated_section_name': self.display_name
         }
         fragment.add_content(self.system.render_template("seq_module.html", params))
-        
+
         self._capture_full_seq_item_metrics(display_items)
         self._capture_current_unit_metrics(display_items)
 
@@ -337,13 +336,20 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
 
         return False
 
-    def _is_prereq_met(self, force_on_unmet):
+    def _is_prereq_met(self, recalc_on_unmet):
         """
         Evaluate if the user has completed the prerequiste
+
+        Arguments:
+            recalc_on_unmet: Recalculate the subsection grade if prereq has not yet been met
+
+        Returns:
+            tuple: True|False,
+            prereq_meta_info = { 'url': prereq_url, 'display_name': prereq_name}
         """
         gating_service = self.runtime.service(self, 'gating')
         if gating_service:
-            return gating_service.is_prereq_met(self.location, self.runtime.user_id, force_on_unmet)
+            return gating_service.is_prereq_met(self.location, self.runtime.user_id, recalc_on_unmet)
 
         return False, {}
 
