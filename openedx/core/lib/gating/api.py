@@ -306,15 +306,6 @@ def get_gated_content(course, user):
         ]
 
 
-def _get_block_id(milestone):
-    """
-    Get the block id for the given milestone
-    """
-    prereq_content_key = milestone['namespace'].replace(GATING_NAMESPACE_QUALIFIER, '')
-    block_id = UsageKey.from_string(prereq_content_key).block_id
-    return block_id
-
-
 def is_prereq_met(content_id, user_id, recalc_on_unmet=False):
     """
     Returns true if the prequiste has been met for a given milestone
