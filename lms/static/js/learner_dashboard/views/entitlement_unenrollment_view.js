@@ -48,8 +48,11 @@
                     var $trigger = $(event.target),
                         courseName = $trigger.data('courseName'),
                         courseNumber = $trigger.data('courseNumber'),
-                        isRefundable = $trigger.data('entitlementIsRefundable') && $trigger.data('entitlementIsRefundable').toLowerCase() === 'true',
+                        isRefundable = $trigger.data('entitlementIsRefundable'),
                         apiEndpoint = $trigger.data('entitlementApiEndpoint');
+
+                    // Convert to boolean.
+                    isRefundable = isRefundable && isRefundable.toLowerCase() === 'true';
 
                     this.resetModal();
                     this.setTrackInfo(courseName, courseNumber);
@@ -129,9 +132,12 @@
                 },
 
                 onComplete: function(xhr) {
-                    if (xhr.status === 204) {
+                    var status = xhr.status,
+                        message = xhr.responseJSON && xhr.responseJSON.detail;
+
+                    if (status === 204) {
                         window.location.href = this.dashboardPath;
-                    } else if (xhr.status === 401 && xhr.responseJSON.detail === 'Authentication credentials were not provided.') {
+                    } else if (status === 401 && message === 'Authentication credentials were not provided.') {
                         window.location.href = this.signInPath + '?next=' + encodeURIComponent(this.dashboardPath);
                     } else {
                         this.setError(gettext('Error: something went wrong while processing your request.'));

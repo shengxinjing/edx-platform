@@ -8,10 +8,10 @@ var edx = edx || {};
 
     // Generate the properties object to be passed along with business intelligence events.
     edx.dashboard.dropdown.toggleCourseActionsDropdownMenu = function(event) {
-        var $currentTarget = $(event.currentTarget),
-            dashboardIndex = $currentTarget.data().dashboardIndex,
-            $dropdown = $($currentTarget.data('dropdownSelector') || '#actions-dropdown-' + dashboardIndex),
-            $dropdownButton = $($currentTarget.data('dropdownButtonSelector') || '#actions-dropdown-link-' + dashboardIndex),
+        var $target = $(event.currentTarget),
+            dashboardIndex = $target.data().dashboardIndex,
+            $dropdown = $($target.data('dropdownSelector') || '#actions-dropdown-' + dashboardIndex),
+            $dropdownButton = $($target.data('dropdownButtonSelector') || '#actions-dropdown-link-' + dashboardIndex),
             ariaExpandedState = ($dropdownButton.attr('aria-expanded') === 'true'),
             menuItems = $dropdown.find('a');
 
